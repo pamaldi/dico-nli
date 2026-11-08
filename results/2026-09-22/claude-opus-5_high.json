@@ -1,0 +1,46 @@
+{
+  "0-shot | indipendente (etichetta) | en": {
+    "wF1": 0.6648606211219602,
+    "SoftCons": 0.8122743682310469,
+    "HardCons": 0.6389891696750902
+  },
+  "0-shot | indipendente (probabilita') | en": {
+    "wF1": 0.6648606211219602,
+    "SoftCons": 0.8122743682310469,
+    "HardCons": 0.6389891696750902
+  },
+  "0-shot | + inversione | en": {
+    "wF1": 0.6622114374161691,
+    "SoftCons": 0.8989169675090253,
+    "HardCons": 0.6823104693140795
+  },
+  "0-shot | meta": {
+    "token_in": 510448,
+    "token_out": 126617,
+    "costo_usd": 2.8588325,
+    "senza_risposta": [],
+    "accordo_etichetta_argmax": 1.0
+  },
+  "8-shot | indipendente (etichetta) | en": {
+    "wF1": 0.6668566154794392,
+    "SoftCons": 0.6787003610108303,
+    "HardCons": 0.5740072202166066
+  },
+  "8-shot | indipendente (probabilita') | en": {
+    "wF1": 0.6668566154794392,
+    "SoftCons": 0.6787003610108303,
+    "HardCons": 0.5740072202166066
+  },
+  "8-shot | + inversione | en": {
+    "wF1": 0.6720959595959597,
+    "SoftCons": 0.8050541516245487,
+    "HardCons": 0.6534296028880866
+  },
+  "8-shot | meta": {
+    "token_in": 724948,
+    "token_out": 83061,
+    "costo_usd": 2.8506325,
+    "senza_risposta": [],
+    "accordo_etichetta_argmax": 1.0
+  }
+}

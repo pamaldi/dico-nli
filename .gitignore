@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+.idea/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.env
+# dati e scorer ufficiali: si riscaricano con scripts/download_data.py alla revisione fissata
+data/raw/
+# predizioni, log delle API, log-probabilita' dei modelli
+runs/

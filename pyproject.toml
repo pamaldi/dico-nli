@@ -1,0 +1,80 @@
+[project]
+name = "dico-nli"
+version = "0.1.0"
+description = "SemEval 2027 Task 2 (DiCo-NLI): NLI fine-grained con consistenza direzionale, vincoli simbolici in decodifica"
+readme = "README.md"
+authors = [
+    { name = "Pasquale Grimaldi", email = "pamaldi@yahoo.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    # dati
+    "pandas>=2.2",
+    "numpy>=2.0",
+    "pydantic>=2.8",
+    # metriche e modelli classici
+    "scikit-learn>=1.5",
+    "scipy>=1.13",
+    # LLM via API
+    "anthropic>=0.50",
+    "tenacity>=9.0",
+    # utilita
+    "typer>=0.12",
+    "rich>=13.7",
+    "tqdm>=4.66",
+    "python-dotenv>=1.0",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+dico-nli = "dico_nli.cli:app"
+
+[dependency-groups]
+# installato da `uv sync`
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.6",
+    "ipykernel>=6.29",
+    "jupyterlab>=4.2",
+    "matplotlib>=3.9",
+    "seaborn>=0.13",
+]
+# modelli locali (8 GB di GPU: encoder base/large, LLM piccoli)
+# installare con `uv sync --group ml`, eseguire con `uv run --group ml ...`
+ml = [
+    "torch>=2.4",
+    "transformers>=4.45",
+    "accelerate>=1.0",
+    "sentencepiece>=0.2",
+    "protobuf>=5.0",
+    "peft>=0.13",
+]
+
+[tool.uv]
+default-groups = ["dev"]
+
+# torch con CUDA 12.6 (RTX 4060), come in agent-risk
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu126" }
+
+[build-system]
+requires = ["uv_build>=0.11.1,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+extend-exclude = ["data"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E741"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
