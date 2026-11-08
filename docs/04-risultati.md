@@ -69,4 +69,15 @@ Con il codice di questo progetto:
 
 - **Baseline senza apprendimento:** identiche nelle tre lingue (test automatico per l'inglese).
 - **Claude Opus 5:** rileggendo le risposte grezze di settembre con `llm_claude.py evaluate --model claude-opus-5 --effort high --shots 0 8`, tutti i numeri della tabella sopra coincidono alla terza cifra, anche il pilota (wF1 0,715, SoftCons 0,957). Nessuna spesa.
-- **mdeberta:** vedi sotto.
+- **mdeberta:** un seed (13) con **batch 16** invece di 32: con pesi float32 e batch 32 la memoria della GPU si riempiva e il driver passava alla RAM di sistema, rendendo l'addestramento lentissimo. 10 minuti e mezzo invece dei 3 di settembre. Il primo tentativo, con transformers 5 e senza la correzione del dtype, era andato in NaN ([05](05-ambiente.md)). Numeri vicini a quelli di settembre, entro la variabilità fra seed, ma non identici, perché il batch è diverso:
+
+| Decodifica | Lingua | wF1 8 nov (seed 13, batch 16) | wF1 sett. (3 seed) | HardCons 8 nov | HardCons sett. |
+|---|---|---:|---:|---:|---:|
+| indipendente | en | 0,834 | 0,828 ± 0,001 | 0,845 | 0,835 ± 0,013 |
+| | eu | 0,778 | 0,771 ± 0,005 | 0,780 | 0,781 ± 0,006 |
+| + inversione | en | 0,837 | 0,831 ± 0,002 | 0,859 | 0,863 ± 0,006 |
+| | eu | 0,769 | 0,776 ± 0,012 | 0,794 | 0,813 ± 0,015 |
+| + inversione + cross-lingue | tutte | 0,832 | 0,832 ± 0,004 | 0,863 | 0,865 ± 0,002 |
+| + … + artefatto | tutte | 0,936 | 0,934 ± 0,011 | 0,924 | 0,922 ± 0,013 |
+
+Le conclusioni di settembre reggono: l'inversione alza HardCons, e il cross-lingue porta il basco al livello dell'inglese. Per una riproduzione esatta servirebbe un batch effettivo di 32 (accumulo del gradiente su 2 passi da 16), non ancora implementato. Log in `runs/encoder/train_seed13_b16.log`.

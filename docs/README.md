@@ -4,8 +4,8 @@ Riassume ciò che è stato discusso e stabilito su DiCo-NLI fino all'8 novembre 
 
 | File | Contenuto |
 |---|---|
-| [01-task.md](01-task.md) | che cos'è il task, etichette, regola di inversione, metriche, track, calendario |
-| [02-dati.md](02-dati.md) | file ufficiali, identificativi, statistiche, proprietà verificate (traduzioni parallele, artefatto `NEGATIVE_OTHER`, bias di lunghezza), esempi reali |
+| [01-task.md](01-task.md) | il task spiegato da zero (metodo delle due domande, esempio completo, etichette con fenomeni), il dataset in breve, metriche con esempi, domande frequenti; ogni esempio ha la traduzione italiana |
+| [02-dati.md](02-dati.md) | fonte dei testi, file e colonne, track 4 per esteso, statistiche per verso, segnali superficiali (lunghezza, parole in comune), train contro dev, artefatto `NEGATIVE_OTHER`, gold discutibile |
 | [03-approccio.md](03-approccio.md) | domanda di ricerca, ipotesi, vincoli simbolici in decodifica, piano |
 | [04-risultati.md](04-risultati.md) | risultati del 22 settembre (regole, mdeberta, Claude Opus 5) e verifica di riproduzione dell'8 novembre |
 | [05-ambiente.md](05-ambiente.md) | librerie, gruppi uv, GPU, costi, riproducibilità |

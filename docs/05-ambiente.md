@@ -25,6 +25,8 @@ RTX 4060 Laptop, 8 GB. Verificato l'8 novembre 2026: torch 2.14.1+cu126 vede la 
 
 - mdeberta-v3-base è nella cache di Hugging Face: circa 3 minuti per seed sui track 1–3 uniti (9.126 esempi, 5 epoche, frasi brevi, max 64 token).
 - Modelli non in cache (DeBERTa-v3-large, XLM-R large): `train_encoder.py --download`.
+- **Trappola di transformers 5** (8 novembre 2026): `from_pretrained` carica i pesi nel dtype del checkpoint, float16 per mdeberta-v3-base. Lo script di settembre, eseguito con transformers 5.22, addestrava pesi float16 con AdamW senza scaling: tutte le log-probabilità NaN, e il modello predice sempre EQUIVALENCE (wF1 0,110). `encoder.py` ora passa `dtype=torch.float32`; il bf16 resta solo nell'autocast.
+- All'avvio transformers avvisa di un «incorrect regex pattern» e suggerisce `fix_mistral_regex=True`: per il tokenizer SentencePiece di mdeberta l'avviso sembra spurio (gli id dei token sono plausibili), ma non è verificato a fondo.
 
 ## Costi delle API
 

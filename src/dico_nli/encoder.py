@@ -26,8 +26,10 @@ def train_and_predict(train: list[dict], evals: list[dict], seed: int, *, model_
     torch.manual_seed(seed)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     tok = AutoTokenizer.from_pretrained(model_name, local_files_only=local_only)
+    # pesi master in float32: transformers 5 carica di default nel dtype del checkpoint (float16 per
+    # mdeberta-v3-base) e AdamW su pesi float16 senza scaling produce NaN; bf16 resta solo nell'autocast
     model = AutoModelForSequenceClassification.from_pretrained(
-        model_name, num_labels=len(LABELS), local_files_only=local_only).to(device)
+        model_name, num_labels=len(LABELS), local_files_only=local_only, dtype=torch.float32).to(device)
     lab = {l: i for i, l in enumerate(LABELS)}
 
     def batches(rows, shuffle):
@@ -43,17 +45,25 @@ def train_and_predict(train: list[dict], evals: list[dict], seed: int, *, model_
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=0.01)
     steps = epochs * math.ceil(len(train) / batch)
     sched = get_linear_schedule_with_warmup(opt, int(0.1 * steps), steps)
+    from tqdm import tqdm
+
     model.train()
-    for _ in range(epochs):
+    bar = tqdm(total=steps, desc=f"seed {seed}", mininterval=5)
+    for epoch in range(epochs):
         for chunk, enc in batches(train, shuffle=True):
             y = torch.tensor([lab[r["label"]] for r in chunk], device=device)
             with torch.autocast(device, dtype=torch.bfloat16):
                 loss = torch.nn.functional.cross_entropy(model(**enc).logits.float(), y)
+            if not torch.isfinite(loss):
+                raise FloatingPointError(f"loss non finita all'epoca {epoch + 1}, passo {bar.n}")
+            bar.update()
+            bar.set_postfix(epoca=epoch + 1, loss=f"{loss.item():.3f}", refresh=False)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             opt.step()
             sched.step()
             opt.zero_grad()
+    bar.close()
 
     model.eval()
     out: dict[str, list[float]] = {}
